@@ -8,43 +8,46 @@ export function RecommendationPanel({
 }) {
   if (!recommendation) {
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">
+      <div className="card card-padded text-sm text-[var(--color-text-secondary)]">
         No recommendation is available for this experiment yet.
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-indigo-700">
+    <div className="card card-padded border-[var(--color-accent-border)] bg-[var(--color-accent-subtle)]">
+      <p className="card-section-title text-[var(--color-accent)]">
         Recommended variant
       </p>
-      <p className="mt-1 text-lg font-semibold text-slate-900">
-        Prompt version #{recommendation.recommended_prompt_version_id} —{" "}
+      <p className="mt-2 text-lg font-semibold text-[var(--color-text-primary)]">
+        Prompt version #{recommendation.recommended_prompt_version_id}
+        <span className="mx-2 text-[var(--color-text-muted)]">·</span>
         {recommendation.recommended_model_name}
       </p>
-      <dl className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
+      <dl className="mt-4 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
         <div>
-          <dt className="text-slate-500">Reliability score</dt>
-          <dd className="font-medium text-slate-900">
+          <dt className="text-[var(--color-text-muted)]">Reliability score</dt>
+          <dd className="mt-0.5 font-semibold tabular-nums text-[var(--color-text-primary)]">
             {formatDecimal(recommendation.reliability_score)}
           </dd>
         </div>
         <div>
-          <dt className="text-slate-500">Estimated cost</dt>
-          <dd className="font-medium text-slate-900">
+          <dt className="text-[var(--color-text-muted)]">Estimated cost</dt>
+          <dd className="mt-0.5 font-semibold tabular-nums text-[var(--color-text-primary)]">
             {formatUsd(recommendation.estimated_cost_usd)}
           </dd>
         </div>
         <div>
-          <dt className="text-slate-500">Average latency</dt>
-          <dd className="font-medium text-slate-900">
+          <dt className="text-[var(--color-text-muted)]">Average latency</dt>
+          <dd className="mt-0.5 font-semibold tabular-nums text-[var(--color-text-primary)]">
             {formatLatency(recommendation.average_latency_ms)}
           </dd>
         </div>
       </dl>
-      <p className="mt-3 text-sm text-slate-700">{recommendation.reason}</p>
-      <p className="mt-3 text-xs text-slate-500">
+      <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+        {recommendation.reason}
+      </p>
+      <p className="mt-3 text-xs text-[var(--color-text-muted)]">
         This is an evaluation recommendation based on the runs in this
         experiment, not proof of production suitability.
       </p>

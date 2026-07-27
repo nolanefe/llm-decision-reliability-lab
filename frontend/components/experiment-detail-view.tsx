@@ -15,6 +15,7 @@ import { LoadingState } from "./loading-state";
 import { ErrorState } from "./error-state";
 import { MetricCard } from "./metric-card";
 import { RecommendationPanel } from "./recommendation-panel";
+import { ReliabilityComparison } from "./reliability-comparison";
 import { VariantComparisonTable } from "./variant-comparison-table";
 import { RunTable } from "./run-table";
 import { FailureExplorer } from "./failure-explorer";
@@ -120,61 +121,69 @@ export function ExperimentDetailView({ experiment: initial }: { experiment: Expe
     : null;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="page-stack">
       <div>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold text-slate-900">{experiment.name}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-text-primary)]">
+            {experiment.name}
+          </h1>
           <StatusBadge status={experiment.status} />
         </div>
-        <p className="mt-1 text-sm text-slate-500">Experiment #{experiment.id}</p>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          Experiment #{experiment.id}
+        </p>
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+      <section className="card card-padded" aria-labelledby="config-heading">
+        <h2 id="config-heading" className="card-section-title">
           Configuration
         </h2>
-        <dl className="mt-3 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+        <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-4">
           <div>
-            <dt className="text-slate-500">Dataset items</dt>
-            <dd className="font-medium text-slate-900">
+            <dt className="text-[var(--color-text-muted)]">Dataset items</dt>
+            <dd className="mt-0.5 font-medium tabular-nums text-[var(--color-text-primary)]">
               {experiment.dataset_item_ids.length}
             </dd>
           </div>
           <div>
-            <dt className="text-slate-500">Prompt versions</dt>
-            <dd className="font-medium text-slate-900">
+            <dt className="text-[var(--color-text-muted)]">Prompt versions</dt>
+            <dd className="mt-0.5 font-medium tabular-nums text-[var(--color-text-primary)]">
               {experiment.prompt_version_ids.length}
             </dd>
           </div>
           <div>
-            <dt className="text-slate-500">Models</dt>
-            <dd className="font-medium text-slate-900">
+            <dt className="text-[var(--color-text-muted)]">Models</dt>
+            <dd className="mt-0.5 font-medium text-[var(--color-text-primary)]">
               {experiment.model_names.join(", ")}
             </dd>
           </div>
           <div>
-            <dt className="text-slate-500">Repeat count</dt>
-            <dd className="font-medium text-slate-900">{experiment.repeat_count}</dd>
+            <dt className="text-[var(--color-text-muted)]">Repeat count</dt>
+            <dd className="mt-0.5 font-medium tabular-nums text-[var(--color-text-primary)]">
+              {experiment.repeat_count}
+            </dd>
           </div>
           <div>
-            <dt className="text-slate-500">Planned runs</dt>
-            <dd className="font-medium text-slate-900">{plannedRunCount}</dd>
+            <dt className="text-[var(--color-text-muted)]">Planned runs</dt>
+            <dd className="mt-0.5 font-semibold tabular-nums text-[var(--color-accent)]">
+              {plannedRunCount}
+            </dd>
           </div>
           <div>
-            <dt className="text-slate-500">Created</dt>
-            <dd className="font-medium text-slate-900">
+            <dt className="text-[var(--color-text-muted)]">Created</dt>
+            <dd className="mt-0.5 font-medium text-[var(--color-text-primary)]">
               {formatDateTime(experiment.created_at)}
             </dd>
           </div>
           <div>
-            <dt className="text-slate-500">Started</dt>
-            <dd className="font-medium text-slate-900">
+            <dt className="text-[var(--color-text-muted)]">Started</dt>
+            <dd className="mt-0.5 font-medium text-[var(--color-text-primary)]">
               {formatDateTime(experiment.started_at)}
             </dd>
           </div>
           <div>
-            <dt className="text-slate-500">Completed</dt>
-            <dd className="font-medium text-slate-900">
+            <dt className="text-[var(--color-text-muted)]">Completed</dt>
+            <dd className="mt-0.5 font-medium text-[var(--color-text-primary)]">
               {formatDateTime(experiment.completed_at)}
             </dd>
           </div>
@@ -182,20 +191,30 @@ export function ExperimentDetailView({ experiment: initial }: { experiment: Expe
       </section>
 
       {experiment.status === "draft" ? (
-        <section className="rounded-lg border border-amber-200 bg-amber-50 p-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-800">
+        <section
+          className="rounded-[var(--radius-lg)] border border-[var(--color-warning-border)] bg-[var(--color-warning-bg)] p-[var(--card-padding)]"
+          aria-labelledby="execute-heading"
+        >
+          <h2
+            id="execute-heading"
+            className="text-sm font-semibold uppercase tracking-wide text-[var(--color-warning-text)]"
+          >
             Execute experiment
           </h2>
-          <p className="mt-2 text-sm text-amber-900">
-            Executing this experiment makes {plannedRunCount} real, paid OpenAI
-            API calls. Execution runs synchronously in the backend — the page
-            will wait until every run is complete before showing results.
-          </p>
-          {executing ? (
-            <p className="mt-3 text-sm font-medium text-amber-900">
-              Executing… this can take a while for larger plans. Please don&apos;t
-              close this tab.
+          <div className="mt-3 space-y-2 text-sm leading-relaxed text-[var(--color-warning-text)]">
+            <p>
+              Execution makes{" "}
+              <strong className="font-semibold">{plannedRunCount}</strong> real,
+              paid OpenAI API calls.
             </p>
+            <p>
+              Execution is synchronous — this page waits until every run
+              completes before showing results.
+            </p>
+            <p>Confirmation is required before any calls are made.</p>
+          </div>
+          {executing ? (
+            <LoadingState label="Executing… this can take a while for larger plans. Please don't close this tab." />
           ) : null}
           {executeError ? (
             <div className="mt-3">
@@ -206,15 +225,16 @@ export function ExperimentDetailView({ experiment: initial }: { experiment: Expe
             type="button"
             disabled={executing}
             onClick={() => setConfirmOpen(true)}
-            className="mt-4 rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            className="btn btn-primary mt-4"
           >
             {executing ? "Executing…" : "Execute experiment"}
           </button>
           <ConfirmationDialog
             open={confirmOpen}
             title="Execute this experiment?"
-            description={`This makes ${plannedRunCount} real, paid OpenAI API calls and cannot be undone. Continue?`}
+            description={`This will make ${plannedRunCount} real, paid OpenAI API calls synchronously. This action cannot be undone.`}
             confirmLabel="Execute"
+            cancelLabel="Cancel"
             onConfirm={handleExecute}
             onCancel={() => setConfirmOpen(false)}
           />
@@ -233,7 +253,7 @@ export function ExperimentDetailView({ experiment: initial }: { experiment: Expe
       ) : null}
 
       {experiment.status === "completed" ? (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-[var(--section-gap)]">
           {!results && !resultsError ? <LoadingState label="Loading results…" /> : null}
           {resultsError ? (
             <ErrorState title="Could not load results" message={resultsError} />
@@ -241,12 +261,19 @@ export function ExperimentDetailView({ experiment: initial }: { experiment: Expe
 
           {results ? (
             <>
-              <section>
-                <h2 className="text-lg font-semibold text-slate-900">
-                  Execution summary
+              <section aria-labelledby="summary-heading">
+                <h2
+                  id="summary-heading"
+                  className="text-lg font-semibold text-[var(--color-text-primary)]"
+                >
+                  Executive summary
                 </h2>
-                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <MetricCard label="Total runs" value={String(results.metrics.total_runs)} />
+                <div className="metric-grid mt-4">
+                  <MetricCard
+                    label="Total runs"
+                    value={String(results.metrics.total_runs)}
+                    highlight
+                  />
                   <MetricCard
                     label="Best avg reliability"
                     value={formatDecimal(bestReliabilityScore)}
@@ -266,36 +293,68 @@ export function ExperimentDetailView({ experiment: initial }: { experiment: Expe
                 </div>
               </section>
 
-              <section>
-                <h2 className="text-lg font-semibold text-slate-900">Recommendation</h2>
-                <div className="mt-3">
+              <section aria-labelledby="recommendation-heading">
+                <h2
+                  id="recommendation-heading"
+                  className="text-lg font-semibold text-[var(--color-text-primary)]"
+                >
+                  Recommended variant
+                </h2>
+                <div className="mt-4">
                   <RecommendationPanel recommendation={results.metrics.recommendation} />
                 </div>
               </section>
 
-              <section>
-                <h2 className="text-lg font-semibold text-slate-900">
-                  Variant comparison
+              <section aria-labelledby="reliability-heading">
+                <h2
+                  id="reliability-heading"
+                  className="text-lg font-semibold text-[var(--color-text-primary)]"
+                >
+                  Reliability comparison
                 </h2>
-                <div className="mt-3">
+                <div className="card card-padded mt-4">
+                  <ReliabilityComparison variants={results.metrics.variant_metrics} />
+                </div>
+              </section>
+
+              <section aria-labelledby="variant-heading">
+                <h2
+                  id="variant-heading"
+                  className="text-lg font-semibold text-[var(--color-text-primary)]"
+                >
+                  Full variant comparison
+                </h2>
+                <div className="mt-4">
                   <VariantComparisonTable variants={results.metrics.variant_metrics} />
                 </div>
               </section>
 
-              <section>
-                <h2 className="text-lg font-semibold text-slate-900">
-                  Runs ({results.runs.length})
+              <section aria-labelledby="runs-heading">
+                <h2
+                  id="runs-heading"
+                  className="text-lg font-semibold text-[var(--color-text-primary)]"
+                >
+                  Run details
+                  <span className="ml-2 text-base font-normal text-[var(--color-text-muted)]">
+                    ({results.runs.length})
+                  </span>
                 </h2>
-                <div className="mt-3">
+                <div className="mt-4">
                   <RunTable runs={results.runs} />
                 </div>
               </section>
 
-              <section>
-                <h2 className="text-lg font-semibold text-slate-900">
-                  Failure explorer ({results.failures.length})
+              <section aria-labelledby="failures-heading">
+                <h2
+                  id="failures-heading"
+                  className="text-lg font-semibold text-[var(--color-text-primary)]"
+                >
+                  Failure explorer
+                  <span className="ml-2 text-base font-normal text-[var(--color-text-muted)]">
+                    ({results.failures.length})
+                  </span>
                 </h2>
-                <div className="mt-3">
+                <div className="mt-4">
                   <FailureExplorer failures={results.failures} />
                 </div>
               </section>

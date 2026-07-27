@@ -1,17 +1,43 @@
-const STATUS_STYLES: Record<string, string> = {
-  draft: "bg-slate-100 text-slate-700 ring-slate-300",
-  pending: "bg-blue-50 text-blue-700 ring-blue-300",
-  running: "bg-amber-50 text-amber-700 ring-amber-300",
-  completed: "bg-green-50 text-green-700 ring-green-300",
-  failed: "bg-red-50 text-red-700 ring-red-300",
+const STATUS_STYLES: Record<string, { bg: string; text: string; border: string }> = {
+  draft: {
+    bg: "var(--color-bg-muted)",
+    text: "var(--color-text-secondary)",
+    border: "var(--color-border)",
+  },
+  pending: {
+    bg: "#eff6ff",
+    text: "#1e40af",
+    border: "#bfdbfe",
+  },
+  running: {
+    bg: "var(--color-warning-bg)",
+    text: "var(--color-warning-text)",
+    border: "var(--color-warning-border)",
+  },
+  completed: {
+    bg: "var(--color-success-bg)",
+    text: "var(--color-success-text)",
+    border: "var(--color-success-border)",
+  },
+  failed: {
+    bg: "var(--color-error-bg)",
+    text: "var(--color-error-text)",
+    border: "var(--color-error-border)",
+  },
 };
 
 export function StatusBadge({ status }: { status: string }) {
-  const styles = STATUS_STYLES[status] ?? "bg-slate-100 text-slate-700 ring-slate-300";
+  const styles = STATUS_STYLES[status] ?? STATUS_STYLES.draft;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${styles}`}
+      className="badge"
+      style={{
+        background: styles.bg,
+        color: styles.text,
+        borderColor: styles.border,
+      }}
     >
+      <span className="sr-only">Status: </span>
       {status}
     </span>
   );

@@ -20,12 +20,14 @@ export function ConfirmationDialog({
   onCancel: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (open && !dialog.open) {
       dialog.showModal();
+      cancelRef.current?.focus();
     } else if (!open && dialog.open) {
       dialog.close();
     }
@@ -34,28 +36,42 @@ export function ConfirmationDialog({
   return (
     <dialog
       ref={dialogRef}
+      className="confirmation-dialog"
+      aria-labelledby="confirm-dialog-title"
+      aria-describedby="confirm-dialog-desc"
       onCancel={(event) => {
         event.preventDefault();
         onCancel();
       }}
-      className="w-full max-w-md rounded-lg border border-slate-200 p-0 backdrop:bg-slate-900/40"
+      onClick={(event) => {
+        if (event.target === dialogRef.current) {
+          onCancel();
+        }
+      }}
     >
       <div className="p-5">
-        <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-        <p className="mt-2 text-sm text-slate-600">{description}</p>
-        <div className="mt-5 flex justify-end gap-3">
+        <h2
+          id="confirm-dialog-title"
+          className="text-lg font-semibold text-[var(--color-text-primary)]"
+        >
+          {title}
+        </h2>
+        <p
+          id="confirm-dialog-desc"
+          className="mt-2 text-sm leading-relaxed text-[var(--color-text-secondary)]"
+        >
+          {description}
+        </p>
+        <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
           <button
+            ref={cancelRef}
             type="button"
             onClick={onCancel}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            className="btn btn-secondary"
           >
             {cancelLabel}
           </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-          >
+          <button type="button" onClick={onConfirm} className="btn btn-primary">
             {confirmLabel}
           </button>
         </div>

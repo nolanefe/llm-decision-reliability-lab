@@ -15,9 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className="flex min-h-full flex-col bg-slate-50 text-slate-900 antialiased">
+      <body className="flex min-h-full flex-col antialiased">
         <AppHeader />
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
+        <main className="mx-auto w-full max-w-[var(--content-max-width)] flex-1 px-[var(--page-padding-x)] py-[var(--page-padding-y)]">
           {children}
         </main>
       </body>

@@ -2,18 +2,24 @@ export function MetricCard({
   label,
   value,
   hint,
+  highlight,
 }: {
   label: string;
   value: string;
   hint?: string;
+  highlight?: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-        {label}
+    <div
+      className={`card card-padded ${highlight ? "border-[var(--color-accent-border)] bg-[var(--color-accent-subtle)]" : ""}`}
+    >
+      <p className="card-section-title">{label}</p>
+      <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-tight text-[var(--color-text-primary)]">
+        {value}
       </p>
-      <p className="mt-1 text-2xl font-semibold text-slate-900">{value}</p>
-      {hint ? <p className="mt-1 text-xs text-slate-500">{hint}</p> : null}
+      {hint ? (
+        <p className="mt-1 text-xs text-[var(--color-text-muted)]">{hint}</p>
+      ) : null}
     </div>
   );
 }

@@ -12,10 +12,10 @@ export default async function NewExperimentPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="page-stack">
       <PageHeading
         title="Create experiment"
-        description="Select the dataset items, prompt versions, models, and repeat count to compare. Execution is a separate, explicit step."
+        description="Select dataset items, prompt versions, models, and a repeat count. Execution is a separate, explicit step after creation."
       />
 
       {datasetItems.length === 0 || promptVersions.length === 0 ? (

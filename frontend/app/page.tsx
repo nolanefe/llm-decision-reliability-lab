@@ -1,85 +1,105 @@
 import Link from "next/link";
 
+const WORKFLOW_STEPS = [
+  "Dataset",
+  "Prompt versions",
+  "Repeated model runs",
+  "Deterministic scoring",
+  "Variant comparison",
+];
+
+const MEASURED_DIMENSIONS = [
+  {
+    name: "Schema validity",
+    description: "Whether output parses as the expected structured JSON.",
+  },
+  {
+    name: "Label accuracy",
+    description: "Whether category and priority match expected labels.",
+  },
+  {
+    name: "Consistency",
+    description: "Stability of outputs across repeated runs of the same input.",
+  },
+  {
+    name: "Reliability",
+    description: "Composite score combining validity, quality, and consistency.",
+  },
+  {
+    name: "Latency",
+    description: "End-to-end response time per model call.",
+  },
+  {
+    name: "Token cost",
+    description: "Estimated spend based on prompt and completion tokens.",
+  },
+  {
+    name: "Failure categories",
+    description: "Structured classification of schema, provider, and content errors.",
+  },
+];
+
 export default function OverviewPage() {
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-3xl font-semibold text-slate-900">
+    <div className="page-stack">
+      <section>
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-text-primary)] sm:text-3xl">
           LLM Decision Reliability Lab
         </h1>
-        <p className="mt-3 max-w-2xl text-slate-600">
-          A lightweight evaluation tool for comparing prompt and model
-          variants on a fixed task. It runs each variant repeatedly against a
-          small dataset and measures schema validity, task quality,
-          consistency across repeats, latency, and cost — so you have
-          objective, repeatable evidence for which prompt/model combination to
-          ship, instead of a spot-check.
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--color-text-secondary)]">
+          Compare prompt and model variants on a fixed task with repeatable,
+          deterministic scoring — so you can choose a variant with evidence
+          instead of a spot-check.
         </p>
-      </div>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/experiments/new" className="btn btn-primary">
+            Create an experiment
+          </Link>
+          <Link href="/datasets" className="btn btn-secondary">
+            Inspect datasets
+          </Link>
+        </div>
+      </section>
 
-      <div className="rounded-lg border border-slate-200 bg-white p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          What it measures
-        </h2>
-        <ul className="mt-3 flex flex-col gap-2 text-sm text-slate-700">
-          <li>
-            <span className="font-medium text-slate-900">Schema validity</span>{" "}
-            — whether the model&apos;s output parses as the expected structured JSON.
-          </li>
-          <li>
-            <span className="font-medium text-slate-900">Task quality</span> —
-            whether the output matches the expected category and priority.
-          </li>
-          <li>
-            <span className="font-medium text-slate-900">Consistency</span> —
-            how stable outputs are across repeated runs of the same input.
-          </li>
-          <li>
-            <span className="font-medium text-slate-900">Latency and cost</span>{" "}
-            — measured per run and aggregated per variant.
-          </li>
-          <li>
-            <span className="font-medium text-slate-900">Reliability score</span>{" "}
-            — a single comparable metric combining the above, used to
-            recommend a variant.
-          </li>
+      <section className="card card-padded">
+        <h2 className="card-section-title">Evaluation workflow</h2>
+        <div className="mt-4 workflow-steps" aria-label="Evaluation workflow steps">
+          {WORKFLOW_STEPS.map((step, index) => (
+            <span key={step} className="contents">
+              {index > 0 ? (
+                <span className="workflow-arrow" aria-hidden="true">
+                  →
+                </span>
+              ) : null}
+              <span className="workflow-step">{step}</span>
+            </span>
+          ))}
+        </div>
+        <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+          Select a fixed dataset and prompt versions, choose models and a repeat
+          count, execute the experiment, then compare variants on measured
+          dimensions.
+        </p>
+      </section>
+
+      <section className="card card-padded">
+        <h2 className="card-section-title">Measured dimensions</h2>
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          {MEASURED_DIMENSIONS.map((dimension) => (
+            <li
+              key={dimension.name}
+              className="rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg-muted)] px-4 py-3"
+            >
+              <p className="text-sm font-medium text-[var(--color-text-primary)]">
+                {dimension.name}
+              </p>
+              <p className="mt-0.5 text-sm text-[var(--color-text-secondary)]">
+                {dimension.description}
+              </p>
+            </li>
+          ))}
         </ul>
-      </div>
-
-      <div className="rounded-lg border border-slate-200 bg-white p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Workflow
-        </h2>
-        <p className="mt-3 text-sm font-medium text-slate-900">
-          Dataset → Prompt Versions → Repeated Runs → Scoring → Comparison
-        </p>
-        <p className="mt-2 text-sm text-slate-600">
-          Pick a fixed dataset and a set of prompt versions, choose a model
-          and repeat count, run the experiment, then compare variants side by
-          side on the metrics above.
-        </p>
-      </div>
-
-      <div className="flex flex-wrap gap-3">
-        <Link
-          href="/experiments/new"
-          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-        >
-          Create an experiment
-        </Link>
-        <Link
-          href="/experiments"
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-        >
-          View experiments
-        </Link>
-        <Link
-          href="/datasets"
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-        >
-          Inspect evaluation data
-        </Link>
-      </div>
+      </section>
     </div>
   );
 }

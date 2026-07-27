@@ -8,7 +8,7 @@ export function ErrorState({
   return (
     <div
       role="alert"
-      className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+      className="rounded-[var(--radius-lg)] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] p-4 text-sm text-[var(--color-error-text)]"
     >
       <p className="font-medium">{title}</p>
       <p className="mt-1">{message}</p>

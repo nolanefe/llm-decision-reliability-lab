@@ -4,84 +4,57 @@ import { StatusBadge } from "./status-badge";
 
 export function RunTable({ runs }: { runs: Run[] }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200">
-      <table className="min-w-full divide-y divide-slate-200 text-sm">
-        <thead className="bg-slate-50">
+    <div className="table-wrap max-h-[28rem] overflow-y-auto">
+      <table className="data-table">
+        <thead>
           <tr>
-            <Th>Run</Th>
-            <Th>Dataset item</Th>
-            <Th>Prompt version</Th>
-            <Th>Model</Th>
-            <Th align="right">Rep</Th>
-            <Th>Status</Th>
-            <Th>Schema valid</Th>
-            <Th>Category</Th>
-            <Th>Priority</Th>
-            <Th align="right">Latency</Th>
-            <Th align="right">Tokens</Th>
-            <Th align="right">Cost</Th>
-            <Th align="right">Reliability</Th>
+            <th scope="col">Run</th>
+            <th scope="col">Dataset item</th>
+            <th scope="col">Prompt version</th>
+            <th scope="col">Model</th>
+            <th scope="col" className="num">
+              Rep
+            </th>
+            <th scope="col">Status</th>
+            <th scope="col">Schema valid</th>
+            <th scope="col">Category</th>
+            <th scope="col">Priority</th>
+            <th scope="col" className="num">
+              Latency
+            </th>
+            <th scope="col" className="num">
+              Tokens
+            </th>
+            <th scope="col" className="num">
+              Cost
+            </th>
+            <th scope="col" className="num">
+              Reliability
+            </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 bg-white">
+        <tbody>
           {runs.map((run) => (
             <tr key={run.id}>
-              <Td>#{run.id}</Td>
-              <Td>{run.dataset_item_id}</Td>
-              <Td>{run.prompt_version_id}</Td>
-              <Td>{run.model_name}</Td>
-              <Td align="right">{run.repetition_index}</Td>
-              <Td>
+              <td className="tabular-nums">#{run.id}</td>
+              <td>{run.dataset_item_id}</td>
+              <td>{run.prompt_version_id}</td>
+              <td>{run.model_name}</td>
+              <td className="num">{run.repetition_index}</td>
+              <td>
                 <StatusBadge status={run.status} />
-              </Td>
-              <Td>{formatBoolean(run.evaluation?.schema_valid ?? null)}</Td>
-              <Td>{formatBoolean(run.evaluation?.category_correct ?? null)}</Td>
-              <Td>{formatBoolean(run.evaluation?.priority_correct ?? null)}</Td>
-              <Td align="right">{formatLatency(run.latency_ms)}</Td>
-              <Td align="right">{formatNumber(run.total_tokens)}</Td>
-              <Td align="right">{formatUsd(run.estimated_cost_usd)}</Td>
-              <Td align="right">{formatDecimal(run.evaluation?.reliability_score ?? null)}</Td>
+              </td>
+              <td>{formatBoolean(run.evaluation?.schema_valid ?? null)}</td>
+              <td>{formatBoolean(run.evaluation?.category_correct ?? null)}</td>
+              <td>{formatBoolean(run.evaluation?.priority_correct ?? null)}</td>
+              <td className="num">{formatLatency(run.latency_ms)}</td>
+              <td className="num">{formatNumber(run.total_tokens)}</td>
+              <td className="num">{formatUsd(run.estimated_cost_usd)}</td>
+              <td className="num">{formatDecimal(run.evaluation?.reliability_score ?? null)}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-  );
-}
-
-function Th({
-  children,
-  align = "left",
-}: {
-  children: React.ReactNode;
-  align?: "left" | "right";
-}) {
-  return (
-    <th
-      scope="col"
-      className={`whitespace-nowrap px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500 ${
-        align === "right" ? "text-right" : "text-left"
-      }`}
-    >
-      {children}
-    </th>
-  );
-}
-
-function Td({
-  children,
-  align = "left",
-}: {
-  children: React.ReactNode;
-  align?: "left" | "right";
-}) {
-  return (
-    <td
-      className={`whitespace-nowrap px-3 py-2 text-slate-800 ${
-        align === "right" ? "text-right" : "text-left"
-      }`}
-    >
-      {children}
-    </td>
   );
 }

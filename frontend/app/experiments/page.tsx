@@ -12,15 +12,12 @@ export default async function ExperimentsPage() {
   const sorted = [...experiments].sort((a, b) => b.id - a.id);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="page-stack">
       <PageHeading
         title="Experiments"
-        description="Every experiment created against this backend, newest first."
+        description="All experiments created against this backend, newest first."
         action={
-          <Link
-            href="/experiments/new"
-            className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-          >
+          <Link href="/experiments/new" className="btn btn-primary">
             Create experiment
           </Link>
         }
@@ -29,53 +26,60 @@ export default async function ExperimentsPage() {
       {sorted.length === 0 ? (
         <EmptyState
           title="No experiments yet"
-          description="Create an experiment to compare prompt and model variants."
+          description="Create an experiment to compare prompt and model variants on the fixed evaluation dataset."
           action={
-            <Link
-              href="/experiments/new"
-              className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-            >
+            <Link href="/experiments/new" className="btn btn-primary">
               Create experiment
             </Link>
           }
         />
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-slate-200">
-          <table className="min-w-full divide-y divide-slate-200 text-sm">
-            <thead className="bg-slate-50">
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead>
               <tr>
-                <Th>ID</Th>
-                <Th>Name</Th>
-                <Th>Status</Th>
-                <Th align="right">Repeat count</Th>
-                <Th align="right">Dataset items</Th>
-                <Th align="right">Prompt versions</Th>
-                <Th align="right">Models</Th>
-                <Th>Created</Th>
-                <Th>{""}</Th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Status</th>
+                <th scope="col" className="num">
+                  Repeats
+                </th>
+                <th scope="col" className="num">
+                  Dataset
+                </th>
+                <th scope="col" className="num">
+                  Prompts
+                </th>
+                <th scope="col" className="num">
+                  Models
+                </th>
+                <th scope="col">Created</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
+            <tbody>
               {sorted.map((experiment) => (
                 <tr key={experiment.id}>
-                  <Td>#{experiment.id}</Td>
-                  <Td>{experiment.name}</Td>
-                  <Td>
-                    <StatusBadge status={experiment.status} />
-                  </Td>
-                  <Td align="right">{experiment.repeat_count}</Td>
-                  <Td align="right">{experiment.dataset_item_ids.length}</Td>
-                  <Td align="right">{experiment.prompt_version_ids.length}</Td>
-                  <Td align="right">{experiment.model_names.length}</Td>
-                  <Td>{formatDateTime(experiment.created_at)}</Td>
-                  <Td>
+                  <td className="tabular-nums text-[var(--color-text-muted)]">
+                    #{experiment.id}
+                  </td>
+                  <td>
                     <Link
                       href={`/experiments/${experiment.id}`}
-                      className="font-medium text-slate-900 underline underline-offset-2 hover:text-slate-700"
+                      className="font-medium text-[var(--color-accent)] no-underline hover:underline"
                     >
-                      View
+                      {experiment.name}
                     </Link>
-                  </Td>
+                  </td>
+                  <td>
+                    <StatusBadge status={experiment.status} />
+                  </td>
+                  <td className="num">{experiment.repeat_count}</td>
+                  <td className="num">{experiment.dataset_item_ids.length}</td>
+                  <td className="num">{experiment.prompt_version_ids.length}</td>
+                  <td className="num">{experiment.model_names.length}</td>
+                  <td className="whitespace-nowrap text-[var(--color-text-secondary)]">
+                    {formatDateTime(experiment.created_at)}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -83,42 +87,5 @@ export default async function ExperimentsPage() {
         </div>
       )}
     </div>
-  );
-}
-
-function Th({
-  children,
-  align = "left",
-}: {
-  children: React.ReactNode;
-  align?: "left" | "right";
-}) {
-  return (
-    <th
-      scope="col"
-      className={`whitespace-nowrap px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500 ${
-        align === "right" ? "text-right" : "text-left"
-      }`}
-    >
-      {children}
-    </th>
-  );
-}
-
-function Td({
-  children,
-  align = "left",
-}: {
-  children: React.ReactNode;
-  align?: "left" | "right";
-}) {
-  return (
-    <td
-      className={`whitespace-nowrap px-3 py-2 text-slate-800 ${
-        align === "right" ? "text-right" : "text-left"
-      }`}
-    >
-      {children}
-    </td>
   );
 }
