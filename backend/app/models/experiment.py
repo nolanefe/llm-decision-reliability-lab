@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint, String
+from sqlalchemy import JSON, CheckConstraint, String
 from sqlalchemy import Enum as SqlEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -34,6 +34,9 @@ class Experiment(Base):
         _experiment_status_type, default=ExperimentStatus.DRAFT, nullable=False
     )
     repeat_count: Mapped[int] = mapped_column(nullable=False)
+    dataset_item_ids: Mapped[list[int]] = mapped_column(JSON, nullable=False)
+    prompt_version_ids: Mapped[list[int]] = mapped_column(JSON, nullable=False)
+    model_names: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc), nullable=False
     )

@@ -41,6 +41,9 @@ class ExperimentRead(BaseModel):
     name: str
     status: ExperimentStatus
     repeat_count: int
+    dataset_item_ids: list[int]
+    prompt_version_ids: list[int]
+    model_names: list[str]
     created_at: datetime
     started_at: datetime | None
     completed_at: datetime | None

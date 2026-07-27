@@ -36,7 +36,13 @@ def make_prompt_version(**overrides) -> PromptVersion:
 
 
 def make_experiment(**overrides) -> Experiment:
-    defaults = dict(name="baseline-comparison", repeat_count=3)
+    defaults = dict(
+        name="baseline-comparison",
+        repeat_count=3,
+        dataset_item_ids=[1],
+        prompt_version_ids=[1],
+        model_names=["gpt-4o-mini"],
+    )
     defaults.update(overrides)
     return Experiment(**defaults)
 

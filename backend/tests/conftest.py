@@ -35,14 +35,17 @@ def client(db_url, monkeypatch) -> Generator[TestClient, None, None]:
     monkeypatch.setenv("DATABASE_URL", db_url)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
+    from app import models  # noqa: F401
     from app.core.config import get_settings
     from app.db import session as db_session
+    from app.db.base import Base
     from app.db.session import build_engine
 
     get_settings.cache_clear()
 
     test_engine = build_engine(db_url)
     test_session_local = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    Base.metadata.create_all(test_engine)
     monkeypatch.setattr(db_session, "engine", test_engine)
     monkeypatch.setattr(db_session, "SessionLocal", test_session_local)
 
