@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Env files (root-level, shared secrets like OPENAI_API_KEY)
+.env
+.env.local
+.env.*.local
