@@ -26,6 +26,9 @@ from app.core.exceptions import (
     ProviderUnavailableError,
     UnprocessableEntityError,
 )
+from app.evaluation.metrics import compute_variant_metrics
+from app.evaluation.recommendation import build_recommendation
+from app.evaluation.scorer import score_experiment
 from app.llm.openai_provider import OpenAIProvider
 from app.llm.pricing import SUPPORTED_MODELS, calculate_cost_usd
 from app.llm.prompt import render_prompt
@@ -142,6 +145,12 @@ def execute_experiment(
                 prompt_version=prompt_versions_by_id[run.prompt_version_id],
                 provider=provider,
             )
+
+        # All Runs are now in a terminal state: score quality, consistency,
+        # and reliability and persist them before the Experiment is marked
+        # completed. A scoring failure is an orchestration failure (see the
+        # except block below), not a per-run outcome.
+        score_experiment(db, experiment.id)
 
         experiment.status = ExperimentStatus.COMPLETED
         experiment.completed_at = datetime.now(timezone.utc)
@@ -346,6 +355,23 @@ def _build_summary(
         .where(Run.experiment_id == experiment.id, Evaluation.schema_valid.is_(False))
     )
 
+    average_reliability_score = None
+    recommended_prompt_version_id = None
+    recommended_model_name = None
+    if experiment.status == ExperimentStatus.COMPLETED:
+        variant_metrics = compute_variant_metrics(db, experiment)
+        scores = [
+            v.average_reliability_score
+            for v in variant_metrics
+            if v.average_reliability_score is not None
+        ]
+        if scores:
+            average_reliability_score = round(sum(scores) / len(scores), 2)
+        recommendation = build_recommendation(variant_metrics)
+        if recommendation is not None:
+            recommended_prompt_version_id = recommendation.recommended_prompt_version_id
+            recommended_model_name = recommendation.recommended_model_name
+
     return ExecutionSummary(
         experiment_id=experiment.id,
         status=experiment.status,
@@ -356,4 +382,7 @@ def _build_summary(
         schema_invalid_runs=schema_invalid_runs or 0,
         started_at=experiment.started_at,
         completed_at=experiment.completed_at,
+        average_reliability_score=average_reliability_score,
+        recommended_prompt_version_id=recommended_prompt_version_id,
+        recommended_model_name=recommended_model_name,
     )

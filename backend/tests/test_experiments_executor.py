@@ -241,9 +241,9 @@ class TestSuccessfulExecution:
         assert evaluation.category_correct is True
         assert evaluation.priority_correct is True
         assert evaluation.failure_category is None
-        assert evaluation.quality_score is None
-        assert evaluation.consistency_score is None
-        assert evaluation.reliability_score is None
+        assert evaluation.quality_score == 1.0
+        assert evaluation.consistency_score == 1.0
+        assert evaluation.reliability_score == 100.0
 
     def test_content_mismatch_is_classified(self, db_session: Session) -> None:
         item = _make_dataset_item(
@@ -635,3 +635,38 @@ class TestOrchestrationFailure:
 
         db_session.refresh(experiment)
         assert experiment.status == ExperimentStatus.FAILED
+
+    def test_scoring_failure_marks_experiment_failed_and_leaves_no_partial_scores(
+        self, db_session: Session, monkeypatch
+    ) -> None:
+        item = _make_dataset_item(db_session)
+        prompt = _make_prompt_version(db_session)
+        experiment = _make_experiment(
+            db_session,
+            dataset_item_ids=[item.id],
+            prompt_version_ids=[prompt.id],
+            model_names=["gpt-5-mini"],
+        )
+        provider = ScriptedProvider(outcomes=[make_result(VALID_OUTPUT)])
+
+        def _boom(db, experiment_id):
+            raise RuntimeError("scoring exploded")
+
+        monkeypatch.setattr("app.experiments.executor.score_experiment", _boom)
+
+        with pytest.raises(OrchestrationError):
+            execute_experiment(db_session, experiment.id, provider=provider)
+
+        db_session.refresh(experiment)
+        assert experiment.status == ExperimentStatus.FAILED
+
+        run = _runs_for(db_session, experiment.id)[0]
+        evaluation = db_session.scalar(
+            select(Evaluation).where(Evaluation.run_id == run.id)
+        )
+        # The Run/Evaluation created before scoring ran are untouched by
+        # the (mocked) scoring failure -- no partially-applied scores.
+        assert run.status == RunStatus.COMPLETED
+        assert evaluation.quality_score is None
+        assert evaluation.consistency_score is None
+        assert evaluation.reliability_score is None

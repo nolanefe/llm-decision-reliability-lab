@@ -6,8 +6,12 @@ from app.experiments import executor
 from app.llm.provider import LLMProvider
 from app.schemas.execution import ExecutionSummary
 from app.schemas.experiment import ExperimentCreate, ExperimentRead
+from app.schemas.failure import FailureEntry
+from app.schemas.metrics import ExperimentMetricsResponse
 from app.schemas.run import RunRead
 from app.services import experiments as service
+from app.services import failures as failures_service
+from app.services import metrics as metrics_service
 from app.services import runs as runs_service
 
 router = APIRouter(prefix="/api/v1/experiments", tags=["experiments"])
@@ -46,3 +50,17 @@ def list_experiment_runs(
     experiment_id: int, db: Session = Depends(get_db)
 ) -> list[RunRead]:
     return runs_service.list_runs_for_experiment(db, experiment_id)
+
+
+@router.get("/{experiment_id}/metrics", response_model=ExperimentMetricsResponse)
+def get_experiment_metrics(
+    experiment_id: int, db: Session = Depends(get_db)
+) -> ExperimentMetricsResponse:
+    return metrics_service.get_experiment_metrics(db, experiment_id)
+
+
+@router.get("/{experiment_id}/failures", response_model=list[FailureEntry])
+def get_experiment_failures(
+    experiment_id: int, db: Session = Depends(get_db)
+) -> list[FailureEntry]:
+    return failures_service.get_experiment_failures(db, experiment_id)

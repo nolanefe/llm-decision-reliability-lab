@@ -15,3 +15,6 @@ class ExecutionSummary(BaseModel):
     schema_invalid_runs: int
     started_at: datetime | None
     completed_at: datetime | None
+    average_reliability_score: float | None = None
+    recommended_prompt_version_id: int | None = None
+    recommended_model_name: str | None = None

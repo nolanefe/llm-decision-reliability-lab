@@ -6,7 +6,9 @@ dataset, measures schema validity, latency, token cost, task quality, and
 run-to-run consistency, and rolls those up into a single reliability score
 you can compare side by side in a dashboard.
 
-See [PROJECT_SPEC.md](./PROJECT_SPEC.md) for the full v0.1 specification.
+See [PROJECT_SPEC.md](./PROJECT_SPEC.md) for the full v0.1 specification, and
+[docs/scoring-methodology.md](./docs/scoring-methodology.md) for how quality,
+consistency, and reliability scores are computed.
 
 ## Backend development
 

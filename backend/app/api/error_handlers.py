@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.exceptions import (
     ConflictError,
+    IncompleteExperimentDataError,
     NotFoundError,
     OrchestrationError,
     ProviderUnavailableError,
@@ -43,6 +44,17 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=500,
             content={"detail": "Experiment execution failed unexpectedly."},
+        )
+
+    @app.exception_handler(IncompleteExperimentDataError)
+    async def handle_incomplete_experiment_data(
+        request: Request, exc: IncompleteExperimentDataError
+    ) -> JSONResponse:
+        logger.error("Incomplete experiment data while processing %s: %s",
+                     request.url.path, exc)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Experiment data is incomplete or inconsistent."},
         )
 
     @app.exception_handler(SQLAlchemyError)
