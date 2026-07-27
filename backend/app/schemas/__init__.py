@@ -1,6 +1,7 @@
 from app.schemas.dataset_item import DatasetItemCreate, DatasetItemRead
 from app.schemas.enums import TicketCategory, TicketPriority
 from app.schemas.evaluation import EvaluationRead
+from app.schemas.execution import ExecutionSummary
 from app.schemas.experiment import ExperimentCreate, ExperimentRead
 from app.schemas.prompt_version import PromptVersionCreate, PromptVersionRead
 from app.schemas.run import RunRead
@@ -18,4 +19,5 @@ __all__ = [
     "ExperimentRead",
     "RunRead",
     "EvaluationRead",
+    "ExecutionSummary",
 ]

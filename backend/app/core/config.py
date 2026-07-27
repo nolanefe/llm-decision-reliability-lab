@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     environment: str = "development"
     database_url: str = "sqlite:///./reliability_lab.db"
     openai_api_key: str | None = None
+    openai_request_timeout_seconds: float = 60.0
+    max_runs_per_experiment: int = 30
 
 
 @lru_cache

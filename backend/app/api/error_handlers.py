@@ -4,7 +4,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.core.exceptions import ConflictError, NotFoundError, UnprocessableEntityError
+from app.core.exceptions import (
+    ConflictError,
+    NotFoundError,
+    OrchestrationError,
+    ProviderUnavailableError,
+    UnprocessableEntityError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +29,21 @@ def register_exception_handlers(app: FastAPI) -> None:
         request: Request, exc: UnprocessableEntityError
     ) -> JSONResponse:
         return JSONResponse(status_code=422, content={"detail": str(exc)})
+
+    @app.exception_handler(ProviderUnavailableError)
+    async def handle_provider_unavailable(
+        request: Request, exc: ProviderUnavailableError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=503, content={"detail": str(exc)})
+
+    @app.exception_handler(OrchestrationError)
+    async def handle_orchestration_error(
+        request: Request, exc: OrchestrationError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Experiment execution failed unexpectedly."},
+        )
 
     @app.exception_handler(SQLAlchemyError)
     async def handle_db_error(request: Request, exc: SQLAlchemyError) -> JSONResponse:
