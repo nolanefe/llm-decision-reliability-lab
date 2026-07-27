@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.core.exceptions import NotFoundError
 from app.models.experiment import Experiment
@@ -12,7 +12,10 @@ def list_runs_for_experiment(db: Session, experiment_id: int) -> list[Run]:
 
     return list(
         db.scalars(
-            select(Run).where(Run.experiment_id == experiment_id).order_by(Run.id)
+            select(Run)
+            .where(Run.experiment_id == experiment_id)
+            .options(selectinload(Run.evaluation))
+            .order_by(Run.id)
         ).all()
     )
 

@@ -4,6 +4,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict
 
 from app.models.enums import RunStatus
+from app.schemas.evaluation import EvaluationRead
 
 
 class RunRead(BaseModel):
@@ -26,3 +27,4 @@ class RunRead(BaseModel):
     error_message: str | None
     created_at: datetime
     completed_at: datetime | None
+    evaluation: EvaluationRead | None

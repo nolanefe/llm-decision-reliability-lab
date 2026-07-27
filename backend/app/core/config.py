@@ -16,6 +16,15 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     openai_request_timeout_seconds: float = 60.0
     max_runs_per_experiment: int = 30
+    cors_allowed_origins: str = "http://localhost:3000,http://localhost:3001"
+
+    @property
+    def cors_allowed_origins_list(self) -> list[str]:
+        return [
+            origin.strip()
+            for origin in self.cors_allowed_origins.split(",")
+            if origin.strip()
+        ]
 
 
 @lru_cache
