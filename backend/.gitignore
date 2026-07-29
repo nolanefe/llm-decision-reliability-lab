@@ -20,6 +20,10 @@ htmlcov/
 *.sqlite
 *.sqlite3
 
+# Temporary E2E databases (see frontend/playwright.config.ts)
+.e2e-primary/
+.e2e-empty/
+
 # Env files
 .env
 .env.local

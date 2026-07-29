@@ -13,8 +13,17 @@
 # testing
 /coverage
 
+# playwright
+/playwright-report/
+/blob-report/
+/test-results/
+/e2e/**/*.png
+/e2e/**/*.webm
+/e2e/**/*.zip
+
 # next.js
 /.next/
+/.next-e2e-*/
 /out/
 
 # production
@@ -41,3 +50,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.tsconfig.json.e2e-backup

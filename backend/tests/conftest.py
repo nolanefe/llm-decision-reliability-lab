@@ -5,6 +5,19 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session, sessionmaker
 
 
+@pytest.fixture(autouse=True)
+def _isolate_settings_from_local_dotenv(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Settings must be built only from variables a test explicitly sets,
+    never from a developer's local backend/.env. That file is gitignored
+    and developer-owned -- tests must pass with it present, absent, or
+    containing anything, so disable dotenv loading for the test session
+    instead of touching it."""
+    from app.core.config import Settings, get_settings
+
+    monkeypatch.setitem(Settings.model_config, "env_file", None)
+    get_settings.cache_clear()
+
+
 @pytest.fixture()
 def db_url(tmp_path) -> str:
     db_path = tmp_path / "test.db"
