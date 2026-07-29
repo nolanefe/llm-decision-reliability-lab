@@ -2,7 +2,7 @@
 
 A full-stack evaluation platform that compares prompt and model configurations on a fixed structured-output task using deterministic, repeatable scoring instead of manual spot-checks.
 
-[![CI](https://github.com/nolanefe/llm-decision-reliability-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/nolanefe/llm-decision-reliability-lab/actions/workflows/ci.yml)
+[![CI](https://github.com/nolanefe/llm-decision-reliability-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/nolanefe/llm-decision-reliability-lab/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Overview
 
