@@ -2,14 +2,15 @@
 
 This is a *pricing snapshot*, not a live lookup. OpenAI pricing changes over
 time; the figures below must be reviewed and updated by hand as they drift
-from https://openai.com/api/pricing/. Do not add a model here without also
-adding its confirmed per-token pricing.
-
-Snapshot date: 2026-07-27.
+from the documented source. Do not add a model here without also adding its
+confirmed per-token pricing.
 """
 
 from dataclasses import dataclass
 from decimal import Decimal
+
+PRICING_SNAPSHOT_DATE = "2026-07-27"
+PRICING_SNAPSHOT_SOURCE = "https://openai.com/api/pricing/"
 
 _MILLION = Decimal("1000000")
 

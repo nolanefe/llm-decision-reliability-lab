@@ -27,8 +27,8 @@ class _FakeResponsesResource:
         self._outcome = outcome
         self.calls: list[dict] = []
 
-    def create(self, *, model: str, input: str):
-        self.calls.append({"model": model, "input": input})
+    def create(self, *, model: str, input: str, store: bool = True, **kwargs):
+        self.calls.append({"model": model, "input": input, "store": store, **kwargs})
         if isinstance(self._outcome, Exception):
             raise self._outcome
         return self._outcome
@@ -68,7 +68,7 @@ class TestOpenAIProviderSuccess:
         provider.generate(prompt="rendered prompt text", model="gpt-5-nano")
 
         assert fake_client.responses.calls == [
-            {"model": "gpt-5-nano", "input": "rendered prompt text"}
+            {"model": "gpt-5-nano", "input": "rendered prompt text", "store": False}
         ]
 
     def test_captures_latency_via_monotonic_timer(self, monkeypatch) -> None:
@@ -97,6 +97,14 @@ class TestOpenAIProviderSuccess:
         assert "format" not in call
         assert "text" not in call
         assert "response_format" not in call
+
+    def test_passes_store_false_to_responses_create(self) -> None:
+        fake_client = _FakeOpenAIClient(_FakeResponse("{}", _FakeUsage(1, 1, 2)))
+        provider = OpenAIProvider(api_key="sk-test", client=fake_client)
+
+        provider.generate(prompt="p", model="gpt-5-mini")
+
+        assert fake_client.responses.calls[0]["store"] is False
 
 
 class TestOpenAIProviderFailureClassification:

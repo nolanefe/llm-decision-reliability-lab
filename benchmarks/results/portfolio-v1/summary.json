@@ -1,0 +1,98 @@
+{
+  "benchmark_id": "portfolio-v1",
+  "completed_runs": 16,
+  "dataset_item_count": 4,
+  "dataset_item_names": [
+    "billing-duplicate-charge",
+    "account-locked-out",
+    "bug-export-crash",
+    "feature-request-dark-mode"
+  ],
+  "dataset_version": "built-in-seed-v1",
+  "executed_at": "2026-08-02T15:24:36.387969",
+  "execution_outcomes": {
+    "provider_executions_completed": 16,
+    "provider_infrastructure_failures": 0,
+    "schema_valid_outputs": 8,
+    "schema_validation_failures": 8
+  },
+  "experiment_id": 1,
+  "experiment_name": "Portfolio benchmark v1",
+  "failed_runs": 0,
+  "failure_category_counts": {
+    "schema_error": 8
+  },
+  "limitations": [
+    "Exploratory benchmark with a limited sample size (4 dataset items, 2 prompt variants, 1 model, 2 repetitions).",
+    "Results describe this controlled setup only; they do not prove universal prompt or model superiority.",
+    "Estimated cost uses the dated pricing snapshot in methodology.json applied to observed input/output token counts only; actual billed cost can differ and cached-input discounts are not modeled.",
+    "Category and priority accuracy are calculated over schema-valid runs only; use schema_validity_rate and reliability_score to account for failures and invalid outputs.",
+    "Not statistically significant for production reliability claims."
+  ],
+  "logical_provider_invocations": 16,
+  "models": [
+    "gpt-5-mini"
+  ],
+  "planned_runs": 16,
+  "prompt_variant_names": [
+    "baseline-triage",
+    "explicit-criteria-triage"
+  ],
+  "recommendation": {
+    "average_latency_ms": 5551.25,
+    "estimated_cost_usd": "0.00763800",
+    "reason": "Selected for the highest average reliability score (100.00) among 2 tested variant(s).",
+    "recommended_model_name": "gpt-5-mini",
+    "recommended_prompt_version_id": 2,
+    "recommended_prompt_version_name": "explicit-criteria-triage",
+    "reliability_score": 100.0
+  },
+  "repeat_count": 2,
+  "total_runs": 16,
+  "variant_metrics": [
+    {
+      "average_consistency_score": 1.0,
+      "average_latency_ms": 5551.25,
+      "average_quality_score": 1.0,
+      "average_reliability_score": 100.0,
+      "category_accuracy": 1.0,
+      "completed_runs": 8,
+      "failed_runs": 0,
+      "failure_count": 0,
+      "model_name": "gpt-5-mini",
+      "priority_accuracy": 1.0,
+      "prompt_version_id": 2,
+      "prompt_version_name": "explicit-criteria-triage",
+      "prompt_version_version": 1,
+      "schema_valid_runs": 8,
+      "schema_validity_rate": 1.0,
+      "total_completion_tokens": 3601,
+      "total_estimated_cost_usd": "0.00763800",
+      "total_prompt_tokens": 1744,
+      "total_runs": 8,
+      "total_tokens": 5345
+    },
+    {
+      "average_consistency_score": 0.0,
+      "average_latency_ms": 11346.0,
+      "average_quality_score": 0.0,
+      "average_reliability_score": 10.0,
+      "category_accuracy": null,
+      "completed_runs": 8,
+      "failed_runs": 0,
+      "failure_count": 8,
+      "model_name": "gpt-5-mini",
+      "priority_accuracy": null,
+      "prompt_version_id": 1,
+      "prompt_version_name": "baseline-triage",
+      "prompt_version_version": 1,
+      "schema_valid_runs": 0,
+      "schema_validity_rate": 0.0,
+      "total_completion_tokens": 6850,
+      "total_estimated_cost_usd": "0.01386200",
+      "total_prompt_tokens": 648,
+      "total_runs": 8,
+      "total_tokens": 7498
+    }
+  ]
+}
