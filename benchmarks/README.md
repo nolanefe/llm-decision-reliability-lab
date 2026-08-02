@@ -1,4 +1,4 @@
-# Portfolio benchmark evidence
+# Benchmark evidence
 
 This directory holds **sanitized, tracked benchmark results** from controlled live-model runs.
 
@@ -47,7 +47,7 @@ python scripts/run_benchmark.py --export-only --experiment-id <id>
 
 ## What gets tracked
 
-Only portfolio-safe, sanitized summaries are written under `benchmarks/results/`. Raw API responses, API keys, and local absolute paths are never exported.
+Only sanitized, repository-safe summaries are written under `benchmarks/results/`. Raw API responses, API keys, and local absolute paths are never exported.
 
 ## Current status
 

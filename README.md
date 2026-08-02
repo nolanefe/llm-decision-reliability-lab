@@ -68,8 +68,8 @@ Full metric definitions, the consistency formula, rounding/clamping behavior, an
 
 ## Demo and benchmark evidence
 
-- **[docs/demo.md](./docs/demo.md)** — 45–90 second walkthrough for interviews (mock vs real results clearly separated).
-- **[benchmarks/README.md](./benchmarks/README.md)** — how to run the controlled portfolio benchmark and export sanitized evidence.
+- **[docs/demo.md](./docs/demo.md)** — 45–90 second end-to-end walkthrough (mock vs real results clearly separated).
+- **[benchmarks/README.md](./benchmarks/README.md)** — how to run the controlled benchmark and export sanitized evidence.
 
 The default **portfolio-v1** benchmark plan (4 dataset items × 2 prompt variants × 1 model × 2 repetitions = **16 logical provider invocations**) is defined in `backend/app/benchmarks/plan.py`. The benchmark live path configures the OpenAI SDK with `max_retries=0`, so each logical invocation corresponds to one HTTP attempt under normal SDK behavior. Live execution is opt-in:
 
