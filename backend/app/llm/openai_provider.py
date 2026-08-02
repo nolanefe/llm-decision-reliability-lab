@@ -35,16 +35,25 @@ class OpenAIProvider:
         *,
         api_key: str,
         timeout_seconds: float | None = None,
+        max_retries: int | None = None,
         client: _ResponsesClient | None = None,
     ) -> None:
-        self._client: _ResponsesClient = client or OpenAI(
-            api_key=api_key, timeout=timeout_seconds
-        )
+        if client is None:
+            client_kwargs: dict[str, object] = {
+                "api_key": api_key,
+                "timeout": timeout_seconds,
+            }
+            if max_retries is not None:
+                client_kwargs["max_retries"] = max_retries
+            client = OpenAI(**client_kwargs)
+        self._client: _ResponsesClient = client
 
     def generate(self, *, prompt: str, model: str) -> ProviderResult:
         start = time.monotonic()
         try:
-            response = self._client.responses.create(model=model, input=prompt)
+            response = self._client.responses.create(
+                model=model, input=prompt, store=False
+            )
         except openai.APITimeoutError as exc:
             logger.warning("openai provider timeout model=%s", model)
             raise ProviderTimeoutError("The OpenAI request timed out.") from exc
